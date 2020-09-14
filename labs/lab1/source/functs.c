@@ -12,11 +12,14 @@ void entry() {
 
 	system("cls");
 
-	printf("Chosen file: ");
+	printf("--------------------\n");
 	puts(fileStr); 
-	printf("\n");
+	printf("--------------------\n\n");
 
+	int funcNum = chooseFunc();
 
+	if (!funcNum)
+		entry();
 }
 
 const char* getFileStr(int fileNum) {
@@ -72,13 +75,13 @@ int chooseFunc() {
 	int funcNum;
 
 	printf("Choose [ OPTION ] to do.\n");
+	printf("0 - <- Back <-\n");
 	printf("1 - Get\n");
 	printf("2 - Delete\n");
 	printf("3 - Update\n");
 	printf("4 - Add\n");
-	printf("5 - Count\n");
-	printf("6 - Back <-\n\n");
-	printf("Enter the number 1 - 6: ");
+	printf("5 - Count\n\n");
+	printf("Enter the number 0 - 5: ");
 
 	scanf("%d", &funcNum);
 

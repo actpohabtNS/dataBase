@@ -3,10 +3,8 @@
 
 void entry();
 
-int chooseFile();
-
-const char* getFileStr(int fileNum);
-
 int chooseFunc();
+
+const char* getFuncStr(int funcNum);
 
 #endif

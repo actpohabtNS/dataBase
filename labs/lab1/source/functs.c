@@ -1,10 +1,23 @@
+#include "../header/functs.h"
+#include "../header/file_functs.h"
+
 #include <stdio.h>
 #include <string.h>
-#include "../header/functs.h"
+
+
+
+// --------------------------------------- ENTRY ---------------------------------------
 
 void entry() {
 	system("cls");
-	
+
+	//struct Metro m1 = { 10, "Hello", 1, 100 };
+	//struct Metro m2 = { 15, "world", 1, 100 };
+
+	//add_master(m1);
+	//add_master(m2);
+	//print_master();
+
 	int funcNum = chooseFunc();
 
 	char funcStr[15] = "";
@@ -16,12 +29,16 @@ void entry() {
 	puts(funcStr); 
 	printf("--------------------\n\n");
 
+	startFunc(funcNum);
 }
+
+
+// --------------------------------------- USER INPUT | FUNC ---------------------------------------
 
 int chooseFunc() {
 	int funcNum;
 
-	printf("Choose [ FUNTION ] to perform:\n\n");
+	printf("Choose [ FUNCTION ] to perform:\n\n");
 	printf("10 - Get master\n");
 	printf("11 - Get slave\n\n");
 	printf("20 - Delete master\n");
@@ -87,4 +104,94 @@ const char* getFuncStr(int funcNum) {
 	}
 
 	return str;
+}
+
+void startFunc(int funcNum) {
+	switch (funcNum)
+	{
+	case 10:
+		break;
+	case 11:
+		break;
+	case 20:
+		break;
+	case 21:
+		break;
+	case 30:
+		break;
+	case 31:
+		break;
+	case 40:
+		add_master(getMetroInput());
+		break;
+	case 41:
+		break;
+	case 50:
+		break;
+	case 51:
+		break;
+	case 60:
+		print_master();
+		break;
+	case 61:
+		break;
+	default:
+		printf("[ ERROR ] NO SUCH FUNC");
+		break;
+	}
+
+	waitAndGoBack();
+}
+
+void waitAndGoBack() {
+	printf("\n\n<- GO BACK\n");
+	printf("press ENTER to go back\n");
+	while (getchar() != '\n'); // option TWO to clean stdin
+	getchar();
+
+	entry();
+}
+
+
+// --------------------------------------- USER INPUT | METRO, LINE ---------------------------------------
+
+struct Metro getMetroInput() {
+	struct Metro m;
+
+	printf("-----------------------\n");
+	printf("ENTER METRO STRUCT\n");
+	printf("-----------------------\n\n");
+
+	printf("Enter Metro [ ID ]: ");
+	scanf("%d", &m.id);
+
+	printf("Enter Metro [ NAME ]: ");
+	fgets(&m.name, sizeof(m.name), stdin); //TODO fix going to next line bug
+
+	printf("Enter Metro [ FOUNDATION YEAR ]: ");
+	scanf("%d", &m.yFounded);
+
+	printf("Enter Metro [ PASSENGER FLOW ]: ");
+	scanf("%d", &m.passFlow);
+
+	return m;
+}
+
+struct Line getLineInput() {
+	struct Line l;
+
+	printf("-----------------------\n");
+	printf("ENTER LINE STRUCT\n");
+	printf("-----------------------\n\n");
+
+	printf("Enter Line [ ID ]: ");
+	scanf("%d", &l.id);
+
+	printf("Enter Line [ LENGTH ]: ");
+	scanf("%d", &l.length);
+
+	printf("Enter Line [ NUMBER OF STATIONS ]: ");
+	scanf("%d", &l.stNum);
+
+	return l;
 }

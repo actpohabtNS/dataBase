@@ -21,9 +21,18 @@
     <ClCompile Include="source\functs.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\file_functs.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\functs.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="header\file_functs.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="header\data_structs.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

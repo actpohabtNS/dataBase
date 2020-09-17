@@ -141,9 +141,12 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="source\functs.c" />
+    <ClCompile Include="source\file_functs.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\data_structs.h" />
     <ClInclude Include="header\functs.h" />
+    <ClInclude Include="header\file_functs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

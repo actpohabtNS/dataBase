@@ -1,5 +1,4 @@
-#ifndef FUNCTS_H   
-#define FUNCTS_H
+#pragma once
 
 void entry();
 
@@ -7,4 +6,10 @@ int chooseFunc();
 
 const char* getFuncStr(int funcNum);
 
-#endif
+void startFunc(int funcNum);
+
+void waitAndGoBack();
+
+struct Metro getMetroInput();
+
+struct Line getLineInput();

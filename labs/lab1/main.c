@@ -1,5 +1,6 @@
-#include <stdio.h>
 #include "header/functs.h"
+
+#include <stdio.h>
 
 void main()
 {

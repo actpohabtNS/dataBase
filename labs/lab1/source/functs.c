@@ -166,7 +166,9 @@ struct Metro getMetroInput() {
 	scanf("%d", &m.id);
 
 	printf("Enter Metro [ NAME ]: ");
-	fgets(&m.name, sizeof(m.name), stdin); //TODO fix going to next line bug
+	getchar();
+	fgets(&m.name, sizeof(m.name), stdin);
+	m.name[strcspn(m.name, "\n")] = 0;
 
 	printf("Enter Metro [ FOUNDATION YEAR ]: ");
 	scanf("%d", &m.yFounded);

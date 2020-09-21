@@ -11,13 +11,6 @@
 void entry() {
 	system("cls");
 
-	//struct Metro m1 = { 10, "Hello", 1, 100 };
-	//struct Metro m2 = { 15, "world", 1, 100 };
-
-	//add_master(m1);
-	//add_master(m2);
-	//print_master();
-
 	int funcNum = chooseFunc();
 
 	char funcStr[15] = "";
@@ -134,6 +127,7 @@ void startFunc(int funcNum) {
 		print_master();
 		break;
 	case 61:
+		print_slave();
 		break;
 	default:
 		printf("[ ERROR ] NO SUCH FUNC");

@@ -11,7 +11,12 @@ struct Line get_slave(int id);
 int get_slave_data_num(int id);
 
 void delete_master(int id);
+void delete_master_file(int id);
+void delete_master_ind(int id);
+
 void delete_slave(int id);
+void delete_slave_file(int id);
+void delete_slave_inspector(int id);
 
 void update_master(int id);
 void update_slave(int id);

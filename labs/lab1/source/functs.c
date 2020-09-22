@@ -134,6 +134,7 @@ void startFunc(int funcNum) {
 		delete_master(get_int_by_string("Enter metro's [ ID ] to [ delete ]: "));
 		break;
 	case 21:
+		delete_slave(get_int_by_string("Enter line's [ ID ] to [ delete ]: "));
 		break;
 	case 30:
 		update_master(get_int_by_string("Enter metro's [ ID ] to [ update ]: "));

@@ -25,14 +25,14 @@ int get_master_data_count() {
 }
 
 int get_slave_data_count() {
-    FILE* fp = fopen("data/S.fl", "rb");
+    FILE* fp = fopen("data/MS.insp", "rb");
 
     if (fp == NULL) {
         return 0;
     }
 
     fseek(fp, 0, SEEK_END);
-    int ind_row_size = sizeof(struct Line);
+    int ind_row_size = sizeof(struct triple_int);
     int rows = ftell(fp) / ind_row_size;
     fclose(fp);
 
@@ -140,16 +140,26 @@ int get_slave_data_num(int id) {
     return res;
 }
 
-// --------------------------------------- DELETE ---------------------------------------
+
+// --------------------------------------- DELETE MASTER ---------------------------------------
 
 void delete_master(int id) {
+    
     int data_num = get_master_data_num(id);
 
     if (data_num == -1) {
-        printf("\nNo element with [ ID ] = %d", id);
+        printf("\nNo metro with [ ID ] = %d", id);
         return;
     }
 
+    delete_master_file(id);
+    delete_master_ind(id);
+
+    printf("\nMetro with id = %d was [ deleted ]!", id);
+}
+
+void delete_master_file(int id) {
+    int data_num = get_master_data_num(id);
 
     FILE* fp = fopen("data/M.fl", "rb");
 
@@ -174,17 +184,22 @@ void delete_master(int id) {
 
     fp = fopen("data/M.fl", "wb");
 
-    for (int i = 0; i < rows - 1; i++) 
+    for (int i = 0; i < rows - 1; i++)
         fwrite(&metros[i], sizeof(metros[0]), 1, fp);
 
     free(metros);
     fclose(fp);
+}
 
+void delete_master_ind(int id) {
+
+    int data_num = get_master_data_num(id);
+    int rows = get_master_data_count();
 
     struct pair_int_int* locs = NULL;
     locs = (struct pair_int_int*)malloc((rows - 1) * sizeof(struct pair_int_int));
 
-    fp = fopen("data/M.ind", "rb");
+    FILE* fp = fopen("data/M.ind", "rb");
 
     struct pair_int_int curr_loc;
 
@@ -211,8 +226,92 @@ void delete_master(int id) {
 
     free(locs);
     fclose(fp);
+}
 
-    printf("\nMetro with id = %d was [ deleted ]!", id);
+
+// --------------------------------------- DELETE SLAVE ---------------------------------------
+
+void delete_slave(int id) {
+    int data_num = get_slave_data_num(id);
+
+    if (data_num == -1) {
+        printf("\nNo line with [ ID ] = %d", id);
+        return;
+    }
+
+    delete_slave_file(id);
+    delete_slave_inspector(id);
+
+    printf("\nLine with id = %d was [ deleted ]!", id);
+}
+
+void delete_slave_file(int id) {
+    int data_num = get_slave_data_num(id);
+
+    FILE* fp = fopen("data/S.fl", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to open [ S.fl ] file in [ delete slave ]\n");
+        return;
+    }
+
+    int rows = get_slave_data_count();
+
+    struct Line* lines = NULL;
+    lines = (struct Line*)malloc((rows - 1) * sizeof(struct Line));
+
+    for (int i = 0; i < rows - 1; i++) {
+        if (i == data_num)
+            fseek(fp, sizeof(struct Line), SEEK_CUR);
+
+        fread(&lines[i], sizeof(lines[0]), 1, fp);
+    }
+
+    fclose(fp);
+
+    fp = fopen("data/S.fl", "wb");
+
+    for (int i = 0; i < rows - 1; i++)
+        fwrite(&lines[i], sizeof(lines[0]), 1, fp);
+
+    free(lines);
+    fclose(fp);
+}
+
+void delete_slave_inspector(int id) {
+    int data_num = get_slave_data_num(id);
+    int rows = get_slave_data_count();
+
+    struct triple_int* locs = NULL;
+    locs = (struct triple_int*)malloc((rows - 1) * sizeof(struct triple_int));
+
+    FILE* fp = fopen("data/MS.insp", "rb");
+
+    struct triple_int curr_loc;
+
+    for (int i = 0; i < rows - 1; i++) {
+        fread(&curr_loc, sizeof(curr_loc), 1, fp);
+
+        if (curr_loc.second == id) {
+            i--;
+            continue;
+        }
+
+        if (curr_loc.third > data_num)
+            curr_loc.third--;
+
+        locs[i] = curr_loc;
+    }
+
+    fclose(fp);
+
+    fp = fopen("data/MS.insp", "wb");
+
+    for (int i = 0; i < rows - 1; i++)
+        fwrite(&locs[i], sizeof(locs[0]), 1, fp);
+
+    free(locs);
+    fclose(fp);
 }
 
 

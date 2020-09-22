@@ -7,6 +7,25 @@
 #include <stdbool.h>
 
 
+// --------------------------------------- GET DATA NUM ---------------------------------------
+
+int get_master_data_count() {
+    FILE* fp = fopen("data/M.ind", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to open [ M.ind ] file in [ get master data count ]\n");
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int ind_row_size = 2 * sizeof(int);
+    int rows = ftell(fp) / ind_row_size;
+    fclose(fp);
+
+    return rows;
+}
+
+
 // --------------------------------------- GET ---------------------------------------
 
 struct Metro get_master(int id) {
@@ -72,14 +91,11 @@ void delete_master(int id) {
     FILE* fp = fopen("data/M.fl", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to open [ M.fl ] file int [ delete master ]\n");
+        printf("[ ERROR ] Unable to open [ M.fl ] file in [ delete master ]\n");
         return;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int ind_row_size = sizeof(struct Metro);
-    int rows = ftell(fp) / ind_row_size;
-    fseek(fp, 0, SEEK_SET);
+    int rows = get_master_data_count();
 
     struct Metro* metros = NULL;
     metros = (struct Metro*)malloc((rows - 1) * sizeof(struct Metro));
@@ -171,14 +187,11 @@ void update_master(int id) {
     FILE* fp = fopen("data/M.fl", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to open [ M.fl ] file int [ update master ]\n");
+        printf("[ ERROR ] Unable to open [ M.fl ] file in [ update master ]\n");
         return;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int ind_row_size = sizeof(struct Metro);
-    int rows = ftell(fp) / ind_row_size;
-    fseek(fp, 0, SEEK_SET);
+    int rows = get_master_data_count();
 
     struct Metro* metros = NULL;
     metros = (struct Metro*)malloc(rows * sizeof(struct Metro));
@@ -230,10 +243,7 @@ void add_master_idx(struct Metro metro) {
         return;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int ind_row_size = sizeof(metro.id) + sizeof(int);
-    int rows = ftell(fp) / ind_row_size;
-    fseek(fp, 0, SEEK_SET);
+    int rows = get_master_data_count();
 
     struct pair_int_int pair = { metro.id, rows };
 
@@ -320,10 +330,7 @@ void count_master() {
         return;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int ind_row_size = sizeof(int) + sizeof(int);
-    int rows = ftell(fp) / ind_row_size;
-    fseek(fp, 0, SEEK_SET);
+    int rows = get_master_data_count();
 
     fclose(fp);
 

@@ -14,3 +14,8 @@ struct Line {
 	int length;
 	int stNum;
 };
+
+struct pair_int_int {
+	int first;
+	int second;
+};

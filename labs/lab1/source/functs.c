@@ -108,7 +108,7 @@ void startFunc(int funcNum) {
 	switch (funcNum)
 	{
 	case 10:
-		printf("%d", get_int_by_string("Input this: "));
+		printMetro(get_master(get_int_by_string("Enter metro's [ ID ]: ")));
 		break;
 	case 11:
 		break;
@@ -209,4 +209,15 @@ int get_int_by_string(char* str) {
 	printf("%s ", str);
 	scanf("%d", &res);
 	return res;
+}
+
+
+
+// --------------------------------------- OUTPUT | METRO, LINE ---------------------------------------
+
+void printMetro(struct Metro metro) {
+	if (metro.id == -1)
+		printf("\nThis metro is ABSENT!\n");
+	else
+		printf("\n%d %s %d %d\n", metro.id, metro.name, metro.passFlow, metro.yFounded);
 }

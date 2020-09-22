@@ -36,87 +36,83 @@ void add_master_idx(struct Metro metro) {
 
     fseek(fp, 0, SEEK_END);
     int ind_row_size = sizeof(metro.id) + sizeof(int);
-    int data_loc = ftell(fp) / ind_row_size;
+    int rows = ftell(fp) / ind_row_size;
     fseek(fp, 0, SEEK_SET);
 
-    int prev_id = -1, next_id = -1;
-    bool insertInside = false;
+    struct pair_int_int pair = { metro.id, rows };
 
-    switch (data_loc)
+    struct pair_int_int* locs = NULL;
+    locs = (struct pair_int_int*)malloc((rows + 1 )* sizeof(struct pair_int_int));
+
+    struct pair_int_int prev_pair, next_pair;
+    int data_num = 0;
+    bool pairWritten = false;
+
+    switch (rows)
     {
     case 0:
-        fseek(fp, 0, SEEK_END);
+        locs[0] = pair;
         break;
 
     case 1:
-        fread(&prev_id, sizeof(prev_id), 1, fp);
-        if (metro.id < prev_id) {
-            fseek(fp, 0, SEEK_SET);
-            insertInside = true;
+        fread(&prev_pair, sizeof(prev_pair), 1, fp);
+
+        if (pair.first < prev_pair.first) {
+            locs[0] = pair;
+            locs[1] = prev_pair;
         }
-        else
-            fseek(fp, 0, SEEK_END);
+        else {
+            locs[0] = prev_pair;
+            locs[1] = pair;
+        }
         break;
 
     default:
-        fread(&prev_id, sizeof(prev_id), 1, fp);
-        fseek(fp, sizeof(int), SEEK_CUR);
-        fread(&next_id, sizeof(next_id), 1, fp);
+        fread(&prev_pair, sizeof(prev_pair), 1, fp);
+        fread(&next_pair, sizeof(next_pair), 1, fp);
 
-        if (metro.id < prev_id) {
-            fseek(fp, 0, SEEK_SET);
-            insertInside = true;
-            break;
+        if (pair.first < prev_pair.first) {
+            locs[0] = pair;
+            pairWritten = true;
+
+            data_num = 1;
         }
 
         do {
-            if (prev_id < metro.id && metro.id < next_id) {
-                fseek(fp, -1 * (int)sizeof(next_id), SEEK_CUR);
-                insertInside = true;
-                break;
+            locs[data_num] = prev_pair;
+
+            if (prev_pair.first < pair.first && pair.first < next_pair.first) {
+                data_num++;
+                locs[data_num] = pair;
+                pairWritten = true;
             }
 
-            prev_id = next_id;
-            fseek(fp, sizeof(int), SEEK_CUR);
-        } while (fread(&next_id, sizeof(next_id), 1, fp) != NULL);
+            data_num++;
+            prev_pair = next_pair;
 
-        fseek(fp, 0, SEEK_END);
+        } while (fread(&next_pair, sizeof(next_pair), 1, fp) != NULL);
+
+        locs[data_num] = prev_pair;
+
+        if (!pairWritten)
+            locs[data_num + 1] = pair;
+
         break;
     }
 
-    if (insertInside) {
-        prev_id = metro.id;
-        int prev_loc = data_loc, next_loc = -1;
+    fclose(fp);
 
-        fread(&next_id, sizeof(next_id), 1, fp);
+    fp = fopen("data/M.ind", "wb+");
 
-        printf("%d %d", next_id, next_loc);
+    for (int i = 0; i < rows + 1; i++)
+        fwrite(&locs[i], sizeof(locs[0]), 1, fp);
 
-        do {
-            fread(&next_loc, sizeof(next_loc), 1, fp);
-            fseek(fp, -1*(int)ind_row_size, SEEK_CUR);
-
-            printf("%d %d",next_id, next_loc);
-
-            fwrite(&prev_id, sizeof(prev_id), 1, fp);
-            fwrite(&prev_loc, sizeof(prev_loc), 1, fp);
-
-            prev_id = next_id;
-            prev_loc = next_loc;
-
-            break;
-        } while (fread(&next_id, sizeof(next_id), 1, fp) != NULL);
-
-        fwrite(&prev_id, sizeof(prev_id), 1, fp);
-        fwrite(&prev_loc, sizeof(prev_loc), 1, fp);
-    }
-    else {
-        fwrite(&metro.id, sizeof(metro.id), 1, fp);
-        fwrite(&data_loc, sizeof(data_loc), 1, fp);
-    }
+    free(locs);
+    locs = NULL;
 
     fclose(fp);
 }
+
 
 
 // --------------------------------------- PRINT ---------------------------------------
@@ -156,3 +152,23 @@ void print_slave() {
 
     fclose(fp);
 }
+
+
+// --------------------------------------- CLEAR ---------------------------------------
+
+void clear_master() {
+    FILE* flp = fopen("data/M.fl", "wb+");
+    fclose(flp);
+
+    FILE* indp = fopen("data/M.ind", "wb+");
+    fclose(indp);
+
+    printf("\nMaster file was CLEANED!\n");
+
+    clear_slave();
+}
+
+void clear_slave() {
+
+}
+

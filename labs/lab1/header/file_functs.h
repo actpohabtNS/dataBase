@@ -8,3 +8,6 @@ void add_master_idx(struct Metro metro);
 
 void print_master();
 void print_slave();
+
+void clear_master();
+void clear_slave();

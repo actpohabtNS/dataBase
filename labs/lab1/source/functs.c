@@ -44,11 +44,13 @@ int chooseFunc() {
 	printf("51 - Count slave\n\n");
 	printf("60 - Print master\n");
 	printf("61 - Print slave\n\n");
+	printf("70 - Clear master\n");
+	printf("71 - Clear slave\n\n");
 	printf("Enter the number: ");
 
 	scanf("%d", &funcNum);
 
-	if (funcNum % 10 > 2 || funcNum > 62 || funcNum < 10) {
+	if (funcNum % 10 > 2 || funcNum > 72 || funcNum < 10) {
 		printf("[ ERROR ] WRONG NUMBER. TRY AGAIN.\n\n");
 		return chooseFunc();
 	}
@@ -78,6 +80,9 @@ const char* getFuncStr(int funcNum) {
 		break;
 	case 6:
 		strcpy(str, "Print");
+		break;
+	case 7:
+		strcpy(str, "Clear");
 		break;
 	default:
 		strcpy(str, "NO SUCH FUNC");
@@ -128,6 +133,12 @@ void startFunc(int funcNum) {
 		break;
 	case 61:
 		print_slave();
+		break;
+	case 70:
+		clear_master();
+		break;
+	case 71:
+		clear_slave();
 		break;
 	default:
 		printf("[ ERROR ] NO SUCH FUNC");

@@ -57,6 +57,85 @@ int get_master_data_num(int id) {
 }
 
 
+// --------------------------------------- DELETE ---------------------------------------
+
+void delete_master(int id) {
+    int data_num = get_master_data_num(id);
+
+    if (data_num == -1) {
+        printf("\nNo element with [ ID ] = %d", id);
+        return;
+    }
+
+
+    FILE* fp = fopen("data/M.fl", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to open [ M.ind ] file int [ delete master ]\n");
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int ind_row_size = sizeof(struct Metro);
+    int rows = ftell(fp) / ind_row_size;
+    fseek(fp, 0, SEEK_SET);
+
+    struct Metro* metros = NULL;
+    metros = (struct Metro*)malloc((rows - 1) * sizeof(struct Metro));
+
+    for (int i = 0; i < rows - 1; i++) {
+        if (i == data_num)
+            fseek(fp, sizeof(struct Metro), SEEK_CUR);
+
+        fread(&metros[i], sizeof(metros[0]), 1, fp);
+    }
+
+    fclose(fp);
+
+    fp = fopen("data/M.fl", "wb");
+
+    for (int i = 0; i < rows - 1; i++) 
+        fwrite(&metros[i], sizeof(metros[0]), 1, fp);
+
+    free(metros);
+    fclose(fp);
+
+
+    struct pair_int_int* locs = NULL;
+    locs = (struct pair_int_int*)malloc((rows - 1) * sizeof(struct pair_int_int));
+
+    fp = fopen("data/M.ind", "rb");
+
+    struct pair_int_int curr_loc;
+
+    for (int i = 0; i < rows - 1; i++) {
+        fread(&curr_loc, sizeof(curr_loc), 1, fp);
+
+        if (curr_loc.first == id) {
+            i--;
+            continue;
+        }
+
+        if (curr_loc.second > data_num)
+            curr_loc.second--;
+
+        locs[i] = curr_loc;
+    }
+
+    fclose(fp);
+
+    fp = fopen("data/M.ind", "wb");
+
+    for (int i = 0; i < rows - 1; i++)
+        fwrite(&locs[i], sizeof(locs[0]), 1, fp);
+
+    free(locs);
+    fclose(fp);
+
+    printf("\nMetro with id = %d was [ deleted ]!", id);
+}
+
+
 // --------------------------------------- ADD MASTER ---------------------------------------
 
 void add_master(struct Metro metro) {
@@ -93,7 +172,7 @@ void add_master_idx(struct Metro metro) {
     struct pair_int_int pair = { metro.id, rows };
 
     struct pair_int_int* locs = NULL;
-    locs = (struct pair_int_int*)malloc((rows + 1 )* sizeof(struct pair_int_int));
+    locs = (struct pair_int_int*)malloc((rows + 1 ) * sizeof(struct pair_int_int));
 
     struct pair_int_int prev_pair, next_pair;
     int data_num = 0;

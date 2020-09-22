@@ -108,11 +108,12 @@ void startFunc(int funcNum) {
 	switch (funcNum)
 	{
 	case 10:
-		printMetro(get_master(get_int_by_string("Enter metro's [ ID ]: ")));
+		printMetro(get_master(get_int_by_string("Enter metro's [ ID ] to [ get ]: ")));
 		break;
 	case 11:
 		break;
 	case 20:
+		delete_master(get_int_by_string("Enter metro's [ ID ] to [ delete ]: "));
 		break;
 	case 21:
 		break;

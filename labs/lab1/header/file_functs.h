@@ -10,6 +10,9 @@ struct Metro get_master(int id);
 int get_master_data_num(int id);
 struct Line get_slave(int master_id, int slave_id);
 
+void delete_master(int id);
+void delete_slave(int id);
+
 void print_master();
 void print_slave();
 

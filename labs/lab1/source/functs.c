@@ -139,6 +139,7 @@ void startFunc(int funcNum) {
 		update_master(get_int_by_string("Enter metro's [ ID ] to [ update ]: "));
 		break;
 	case 31:
+		update_slave(get_int_by_string("Enter line's [ ID ] to [ update ]: "));
 		break;
 	case 40:
 		add_master(getMetroInput());

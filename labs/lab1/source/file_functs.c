@@ -222,7 +222,7 @@ void update_master(int id) {
     int data_num = get_master_data_num(id);
 
     if (data_num == -1) {
-        printf("\nNo element with [ ID ] = %d", id);
+        printf("\nNo master with [ ID ] = %d", id);
         return;
     }
 
@@ -275,6 +275,63 @@ void update_master(int id) {
     fclose(fp);
 
     printf("\nMetro with id = %d was [ updated ]!", id);
+}
+
+void update_slave(int id) {
+    int data_num = get_slave_data_num(id);
+
+    if (data_num == -1) {
+        printf("\nNo slave with [ ID ] = %d", id);
+        return;
+    }
+
+    printf("\nCurrent line is:");
+    print_line(get_slave(id));
+
+    struct Line updatedLine;
+
+    updatedLine.id = id;
+
+    printf("\nUpdated line will be:\Line [ ID ]: %d\n", id);
+    printf("Enter Line [ NUMBER ]: ");
+    scanf("%d", &updatedLine.number);
+
+    printf("Enter Line [ LENGTH ]: ");
+    scanf("%d", &updatedLine.length);
+
+    printf("Enter Line [ NUMBER OF STATIONS ]: ");
+    scanf("%d", &updatedLine.stNum);
+
+
+
+    FILE* fp = fopen("data/S.fl", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to open [ S.fl ] file in [ update slave ]\n");
+        return;
+    }
+
+    int rows = get_slave_data_count();
+
+    struct Line* lines = NULL;
+    lines = (struct Line*)malloc(rows * sizeof(struct Line));
+
+    for (int i = 0; i < rows; i++)
+        fread(&lines[i], sizeof(lines[0]), 1, fp);
+
+    fclose(fp);
+
+    lines[data_num] = updatedLine;
+
+    fp = fopen("data/S.fl", "wb");
+
+    for (int i = 0; i < rows; i++)
+        fwrite(&lines[i], sizeof(lines[0]), 1, fp);
+
+    free(lines);
+    fclose(fp);
+
+    printf("\nLine with id = %d was [ updated ]!", id);
 }
 
 
@@ -388,7 +445,7 @@ void add_master_idx(struct Metro metro) {
 void add_slave(int m_id, struct Line line) {
 
     if (get_master_data_num(m_id) == -1) {
-        printf("No metro with [ ID ] = %d to add a slave to!", m_id);
+        printf("\nNo metro with [ ID ] = %d to add a slave to!", m_id);
         return;
     }
 

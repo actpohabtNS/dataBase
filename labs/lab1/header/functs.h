@@ -12,4 +12,4 @@ struct Line getLineInput();
 
 int get_int_by_string(char* str);
 
-void printMetro(struct Metro metro);
+void print_metro(struct Metro metro);

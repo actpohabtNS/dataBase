@@ -1,4 +1,5 @@
 #include "../header/file_functs.h"
+#include "../header/functs.h"
 #include "../header/data_structs.h"
 
 #include <stdio.h>
@@ -71,7 +72,7 @@ void delete_master(int id) {
     FILE* fp = fopen("data/M.fl", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to open [ M.ind ] file int [ delete master ]\n");
+        printf("[ ERROR ] Unable to open [ M.fl ] file int [ delete master ]\n");
         return;
     }
 
@@ -133,6 +134,71 @@ void delete_master(int id) {
     fclose(fp);
 
     printf("\nMetro with id = %d was [ deleted ]!", id);
+}
+
+
+// --------------------------------------- UPDATE ---------------------------------------
+
+void update_master(int id) {
+    int data_num = get_master_data_num(id);
+
+    if (data_num == -1) {
+        printf("\nNo element with [ ID ] = %d", id);
+        return;
+    }
+
+    printf("\nCurrent metro is:");
+    print_metro(get_master(id));
+
+    struct Metro updatedMetro;
+
+    updatedMetro.id = id;
+
+    printf("\nUpdated metro will be:\nMetro [ ID ]: %d\n", id);
+    printf("Enter Metro [ NAME ]: ");
+    getchar();
+    fgets(&updatedMetro.name, sizeof(updatedMetro.name), stdin);
+    updatedMetro.name[strcspn(updatedMetro.name, "\n")] = 0;
+
+    printf("Enter Metro [ FOUNDATION YEAR ]: ");
+    scanf("%d", &updatedMetro.yFounded);
+
+    printf("Enter Metro [ PASSENGER FLOW ]: ");
+    scanf("%d", &updatedMetro.passFlow);
+
+
+
+    FILE* fp = fopen("data/M.fl", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to open [ M.fl ] file int [ update master ]\n");
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int ind_row_size = sizeof(struct Metro);
+    int rows = ftell(fp) / ind_row_size;
+    fseek(fp, 0, SEEK_SET);
+
+    struct Metro* metros = NULL;
+    metros = (struct Metro*)malloc(rows * sizeof(struct Metro));
+
+    for (int i = 0; i < rows; i++) 
+        fread(&metros[i], sizeof(metros[0]), 1, fp);
+
+    fclose(fp);
+
+    metros[data_num] = updatedMetro;
+
+    fp = fopen("data/M.fl", "wb");
+
+    for (int i = 0; i < rows; i++)
+        fwrite(&metros[i], sizeof(metros[0]), 1, fp);
+
+    free(metros);
+    fclose(fp);
+
+    printf("\nMetro with id = %d was [ updated ]!", id);
 }
 
 
@@ -243,6 +309,26 @@ void add_master_idx(struct Metro metro) {
     fclose(fp);
 }
 
+
+// --------------------------------------- COUNT ---------------------------------------
+
+void count_master() {
+    FILE* fp = fopen("data/M.ind", "ab+");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to create [ M.ind ] file.\n");
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int ind_row_size = sizeof(int) + sizeof(int);
+    int rows = ftell(fp) / ind_row_size;
+    fseek(fp, 0, SEEK_SET);
+
+    fclose(fp);
+
+    printf("Master file has %d [ records ]!", rows);
+}
 
 
 // --------------------------------------- PRINT ---------------------------------------

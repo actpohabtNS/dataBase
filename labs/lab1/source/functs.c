@@ -228,6 +228,9 @@ struct Line getLineInput() {
 	printf("Enter Line [ ID ]: ");
 	scanf("%d", &l.id);
 
+	printf("Enter Line [ NUMBER ] in city Metro: ");
+	scanf("%d", &l.number);
+
 	printf("Enter Line [ LENGTH ]: ");
 	scanf("%d", &l.length);
 

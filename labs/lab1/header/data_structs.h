@@ -11,6 +11,7 @@ struct Metro {
 
 struct Line {
 	int id;
+	int number;
 	int length;
 	int stNum;
 };

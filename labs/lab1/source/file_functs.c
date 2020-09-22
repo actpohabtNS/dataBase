@@ -90,6 +90,9 @@ int get_master_data_num(int id) {
     return res;
 }
 
+struct Line get_slave(int master_id, int slave_id) {
+
+}
 
 // --------------------------------------- DELETE ---------------------------------------
 
@@ -538,10 +541,10 @@ void print_slave_file() {
     }
 
     struct Line l;
-    printf("id | length | number of stations:\n\n");
+    printf("id | number in metro | length | number of stations:\n\n");
 
     while (fread(&l, sizeof(l), 1, fp) != NULL)
-        printf("%d  %d  %d\n", l.id, l.length, l.stNum);
+        printf("%d  %d  %d  %d\n", l.id, l.number, l.length, l.stNum);
 
 
     fclose(fp);

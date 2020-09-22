@@ -9,7 +9,7 @@
 
 // --------------------------------------- GET DATA NUM ---------------------------------------
 
-int get_master_data_count() {
+int get_master_data_rows() {
     FILE* fp = fopen("data/M.ind", "rb");
 
     if (fp == NULL) {
@@ -24,7 +24,7 @@ int get_master_data_count() {
     return rows;
 }
 
-int get_slave_data_count() {
+int get_slave_data_rows() {
     FILE* fp = fopen("data/MS.insp", "rb");
 
     if (fp == NULL) {
@@ -154,6 +154,7 @@ void delete_master(int id) {
 
     delete_master_file(id);
     delete_master_ind(id);
+    delete_slaves_by_master(id);
 
     printf("\nMetro with id = %d was [ deleted ]!", id);
 }
@@ -168,7 +169,7 @@ void delete_master_file(int id) {
         return;
     }
 
-    int rows = get_master_data_count();
+    int rows = get_master_data_rows();
 
     struct Metro* metros = NULL;
     metros = (struct Metro*)malloc((rows - 1) * sizeof(struct Metro));
@@ -194,7 +195,7 @@ void delete_master_file(int id) {
 void delete_master_ind(int id) {
 
     int data_num = get_master_data_num(id);
-    int rows = get_master_data_count();
+    int rows = get_master_data_rows();
 
     struct pair_int_int* locs = NULL;
     locs = (struct pair_int_int*)malloc((rows - 1) * sizeof(struct pair_int_int));
@@ -228,6 +229,36 @@ void delete_master_ind(int id) {
     fclose(fp);
 }
 
+void delete_slaves_by_master(int m_id) {
+    FILE* fp = fopen("data/MS.insp", "rb");
+
+    int rows = get_slave_data_rows();
+
+    int* s_to_del = NULL;
+    s_to_del = (int*)malloc(rows * sizeof(int));
+
+    int slavesNum = 0;
+    int currMId;
+
+    for (int i = 0; i < rows; i++) {
+        fread(&currMId, sizeof(currMId), 1, fp);
+
+        if (currMId == m_id) {
+            fread(&s_to_del[slavesNum], sizeof(s_to_del[0]), 1, fp);
+            slavesNum++;
+            fseek(fp, sizeof(int), SEEK_CUR);
+        } else
+            fseek(fp, 2 * sizeof(int), SEEK_CUR);
+    }
+
+    fclose(fp);
+
+    for (int i = 0; i < slavesNum; i++)
+        delete_slave(s_to_del[i]);
+
+    free(s_to_del);
+}
+
 
 // --------------------------------------- DELETE SLAVE ---------------------------------------
 
@@ -255,7 +286,7 @@ void delete_slave_file(int id) {
         return;
     }
 
-    int rows = get_slave_data_count();
+    int rows = get_slave_data_rows();
 
     struct Line* lines = NULL;
     lines = (struct Line*)malloc((rows - 1) * sizeof(struct Line));
@@ -280,7 +311,7 @@ void delete_slave_file(int id) {
 
 void delete_slave_inspector(int id) {
     int data_num = get_slave_data_num(id);
-    int rows = get_slave_data_count();
+    int rows = get_slave_data_rows();
 
     struct triple_int* locs = NULL;
     locs = (struct triple_int*)malloc((rows - 1) * sizeof(struct triple_int));
@@ -353,7 +384,7 @@ void update_master(int id) {
         return;
     }
 
-    int rows = get_master_data_count();
+    int rows = get_master_data_rows();
 
     struct Metro* metros = NULL;
     metros = (struct Metro*)malloc(rows * sizeof(struct Metro));
@@ -410,7 +441,7 @@ void update_slave(int id) {
         return;
     }
 
-    int rows = get_slave_data_count();
+    int rows = get_slave_data_rows();
 
     struct Line* lines = NULL;
     lines = (struct Line*)malloc(rows * sizeof(struct Line));
@@ -462,7 +493,7 @@ void add_master_idx(struct Metro metro) {
         return;
     }
 
-    int rows = get_master_data_count();
+    int rows = get_master_data_rows();
 
     struct pair_int_int pair = { metro.id, rows };
 
@@ -548,7 +579,7 @@ void add_slave(int m_id, struct Line line) {
         return;
     }
 
-    add_to_inspector(m_id, line.id, get_slave_data_count());
+    add_to_inspector(m_id, line.id, get_slave_data_rows());
     add_slave_file(line);
 }
 
@@ -591,7 +622,7 @@ void count_master() {
         return;
     }
 
-    int rows = get_master_data_count();
+    int rows = get_master_data_rows();
 
     fclose(fp);
 
@@ -606,7 +637,7 @@ void count_slave() {
         return;
     }
 
-    int rows = get_slave_data_count();
+    int rows = get_slave_data_rows();
 
     fclose(fp);
 

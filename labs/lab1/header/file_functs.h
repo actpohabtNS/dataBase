@@ -2,8 +2,8 @@
 
 #include "data_structs.h"
 
-int get_master_data_count();
-int get_slave_data_count();
+int get_master_data_rows();
+int get_slave_data_rows();
 
 struct Metro get_master(int id);
 int get_master_data_num(int id);
@@ -13,6 +13,7 @@ int get_slave_data_num(int id);
 void delete_master(int id);
 void delete_master_file(int id);
 void delete_master_ind(int id);
+void delete_slaves_by_master(int m_id);
 
 void delete_slave(int id);
 void delete_slave_file(int id);

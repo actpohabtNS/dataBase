@@ -13,8 +13,22 @@ int get_master_data_count() {
     FILE* fp = fopen("data/M.ind", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to open [ M.ind ] file in [ get master data count ]\n");
-        return;
+        return 0;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int ind_row_size = 2 * sizeof(int);
+    int rows = ftell(fp) / ind_row_size;
+    fclose(fp);
+
+    return rows;
+}
+
+int get_slave_data_count() {
+    FILE* fp = fopen("data/S.ind", "rb");
+
+    if (fp == NULL) {
+        return 0;
     }
 
     fseek(fp, 0, SEEK_END);
@@ -320,6 +334,133 @@ void add_master_idx(struct Metro metro) {
 }
 
 
+// --------------------------------------- ADD SLAVE ---------------------------------------
+
+void add_slave(int m_id, struct Line line) {
+
+    if (get_master_data_num(m_id) == -1) {
+        printf("No metro with [ ID ] = %d to add a slave to!", m_id);
+        return;
+    }
+
+    add_to_inspector(m_id, line.id, get_slave_data_count());
+    add_slave_idx(line);
+    add_slave_file(line);
+}
+
+void add_to_inspector(int m_id, int s_id, int s_loc) {
+    FILE* fp = fopen("data/MS.insp", "ab+");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to create [ MS.insp ] file.\n");
+        return;
+    }
+
+    struct triple_int triple = {m_id, s_id, s_loc};
+
+    fwrite(&triple, sizeof(triple), 1, fp);
+
+    fclose(fp);
+}
+
+void add_slave_file(struct Line line) {
+    FILE* fp = fopen("data/S.fl", "ab+");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to create [ S.fl ] file.\n");
+        return;
+    }
+
+    fwrite(&line, sizeof(line), 1, fp);
+
+    fclose(fp);
+}
+
+void add_slave_idx(struct Line line) {
+    FILE* fp = fopen("data/S.ind", "ab+");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to create [ S.ind ] file.\n");
+        return;
+    }
+
+    int rows = get_slave_data_count();
+
+    struct pair_int_int pair = { line.id, rows };
+
+    struct pair_int_int* locs = NULL;
+    locs = (struct pair_int_int*)malloc((rows + 1) * sizeof(struct pair_int_int));
+
+    struct pair_int_int prev_pair, next_pair;
+    int data_num = 0;
+    bool pairWritten = false;
+
+    switch (rows)
+    {
+    case 0:
+        locs[0] = pair;
+        break;
+
+    case 1:
+        fread(&prev_pair, sizeof(prev_pair), 1, fp);
+
+        if (pair.first < prev_pair.first) {
+            locs[0] = pair;
+            locs[1] = prev_pair;
+        }
+        else {
+            locs[0] = prev_pair;
+            locs[1] = pair;
+        }
+        break;
+
+    default:
+        fread(&prev_pair, sizeof(prev_pair), 1, fp);
+        fread(&next_pair, sizeof(next_pair), 1, fp);
+
+        if (pair.first < prev_pair.first) {
+            locs[0] = pair;
+            pairWritten = true;
+
+            data_num = 1;
+        }
+
+        do {
+            locs[data_num] = prev_pair;
+
+            if (prev_pair.first < pair.first && pair.first < next_pair.first) {
+                data_num++;
+                locs[data_num] = pair;
+                pairWritten = true;
+            }
+
+            data_num++;
+            prev_pair = next_pair;
+
+        } while (fread(&next_pair, sizeof(next_pair), 1, fp) != NULL);
+
+        locs[data_num] = prev_pair;
+
+        if (!pairWritten)
+            locs[data_num + 1] = pair;
+
+        break;
+    }
+
+    fclose(fp);
+
+    fp = fopen("data/S.ind", "wb+");
+
+    for (int i = 0; i < rows + 1; i++)
+        fwrite(&locs[i], sizeof(locs[0]), 1, fp);
+
+    free(locs);
+    locs = NULL;
+
+    fclose(fp);
+}
+
+
 // --------------------------------------- COUNT ---------------------------------------
 
 void count_master() {
@@ -340,11 +481,10 @@ void count_master() {
 
 // --------------------------------------- PRINT ---------------------------------------
 
-void print_master() {
+void print_master_file() {
     FILE* fp = fopen("data/M.fl", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to create file.\n");
         return;
     }
 
@@ -358,11 +498,10 @@ void print_master() {
     fclose(fp);
 }
 
-void print_slave() {
+void print_master_index() {
     FILE* fp = fopen("data/M.ind", "rb");
 
     if (fp == NULL) {
-        printf("[ ERROR ] Unable to create file.\n");
         return;
     }
 
@@ -372,6 +511,57 @@ void print_slave() {
     while (fread(&id, sizeof(id), 1, fp) != NULL && fread(&data_num, sizeof(data_num), 1, fp) != NULL)
 
         printf("%d  %d\n", id, data_num);
+
+    fclose(fp);
+}
+
+void print_slave_file() {
+    FILE* fp = fopen("data/S.fl", "rb");
+
+    if (fp == NULL) {
+        return;
+    }
+
+    struct Line l;
+    printf("id | length | number of stations:\n\n");
+
+    while (fread(&l, sizeof(l), 1, fp) != NULL)
+        printf("%d  %d  %d\n", l.id, l.length, l.stNum);
+
+
+    fclose(fp);
+}
+
+void print_slave_index() {
+    FILE* fp = fopen("data/S.ind", "rb");
+
+    if (fp == NULL) {
+        return;
+    }
+
+    struct pair_int_int pair;
+    printf("id | data_num:\n\n");
+
+    while (fread(&pair, sizeof(pair), 1, fp) != NULL)
+
+        printf("%d  %d\n", pair.first, pair.second);
+
+    fclose(fp);
+}
+
+void print_inspector() {
+    FILE* fp = fopen("data/MS.insp", "rb");
+
+    if (fp == NULL) {
+        return;
+    }
+
+    struct triple_int triple;
+    printf("m id | s id | s data num:\n\n");
+
+    while (fread(&triple, sizeof(triple), 1, fp) != NULL)
+
+        printf("%d  %d  %d\n", triple.first, triple.second, triple.third);
 
     fclose(fp);
 }
@@ -386,12 +576,27 @@ void clear_master() {
     FILE* indp = fopen("data/M.ind", "wb+");
     fclose(indp);
 
-    printf("\nMaster file was CLEANED!\n");
+    printf("\nMaster file was CLEARED!\n");
 
     clear_slave();
+    clear_inspector();
 }
 
 void clear_slave() {
+    FILE* flp = fopen("data/S.fl", "wb+");
+    fclose(flp);
 
+    FILE* indp = fopen("data/S.ind", "wb+");
+    fclose(indp);
+
+    printf("\nSlave file was CLEARED!\n");
+
+    clear_inspector();
 }
 
+void clear_inspector() {
+    FILE* flp = fopen("data/MS.insp", "wb+");
+    fclose(flp);
+
+    printf("\nInspector file was CLEARED!\n");
+}

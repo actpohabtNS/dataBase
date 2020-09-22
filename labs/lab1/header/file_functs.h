@@ -21,15 +21,21 @@ void add_master_idx(struct Metro metro);
 
 void add_to_inspector(int m_id, int s_id, int s_loc);
 
-void add_slave(struct Line line);
+void add_slave(int m_id, struct Line line);
 void add_slave_file(struct Line line);
 void add_slave_idx(struct Line line);
 
 void count_master();
 void count_slave();
 
-void print_master();
-void print_slave();
+void print_master_file();
+void print_master_index();
+
+void print_slave_file();
+void print_slave_index();
+
+void print_inspector();
 
 void clear_master();
 void clear_slave();
+void clear_inspector();

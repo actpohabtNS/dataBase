@@ -34,23 +34,34 @@ int chooseFunc() {
 	printf("Choose [ FUNCTION ] to perform:\n\n");
 	printf("10 - Get master\n");
 	printf("11 - Get slave\n\n");
+
 	printf("20 - Delete master\n");
 	printf("21 - Delete slave\n\n");
+
 	printf("30 - Update master\n");
 	printf("31 - Update slave\n\n");
+
 	printf("40 - Add master\n");
 	printf("41 - Add slave\n\n");
+
 	printf("50 - Count master\n");
 	printf("51 - Count slave\n\n");
-	printf("60 - Print master\n");
-	printf("61 - Print slave\n\n");
-	printf("70 - Clear master\n");
-	printf("71 - Clear slave\n\n");
+
+	printf("60 - Print (file) master\n");
+	printf("61 - Print (file) slave\n\n");
+
+	printf("70 - Print (index) master\n");
+	printf("71 - Print (index) slave\n\n");
+
+	printf("80 - Print inspector\n\n");
+
+	printf("90 - Clear master\n");
+	printf("91 - Clear slave\n\n");
 	printf("Enter the number: ");
 
 	scanf("%d", &funcNum);
 
-	if (funcNum % 10 > 2 || funcNum > 72 || funcNum < 10) {
+	if (funcNum % 10 > 2 || funcNum > 92 || funcNum < 10) {
 		printf("[ ERROR ] WRONG NUMBER. TRY AGAIN.\n\n");
 		return chooseFunc();
 	}
@@ -60,7 +71,7 @@ int chooseFunc() {
 }
 
 const char* getFuncStr(int funcNum) {
-	char str[15];
+	char str[30];
 
 	switch (funcNum / 10) {
 	case 1:
@@ -79,9 +90,15 @@ const char* getFuncStr(int funcNum) {
 		strcpy(str, "Count");
 		break;
 	case 6:
-		strcpy(str, "Print");
+		strcpy(str, "Print (file)");
 		break;
 	case 7:
+		strcpy(str, "Print (index)");
+		break;
+	case 8:
+		strcpy(str, "Print inspector");
+		return str;
+	case 9:
 		strcpy(str, "Clear");
 		break;
 	default:
@@ -126,6 +143,7 @@ void startFunc(int funcNum) {
 		add_master(getMetroInput());
 		break;
 	case 41:
+		add_slave(get_int_by_string("\nEnter metro's [ ID ] to [ add slave ]: "), getLineInput());
 		break;
 	case 50:
 		count_master();
@@ -133,15 +151,26 @@ void startFunc(int funcNum) {
 	case 51:
 		break;
 	case 60:
-		print_master();
+		print_master_file();
 		break;
 	case 61:
-		print_slave();
+		print_slave_file();
 		break;
 	case 70:
-		clear_master();
+		print_master_index();
 		break;
 	case 71:
+		print_slave_index();
+		break;
+	case 80:
+		print_inspector();
+		break;
+	case 81:
+		break;
+	case 90:
+		clear_master();
+		break;
+	case 91:
 		clear_slave();
 		break;
 	default:

@@ -19,3 +19,9 @@ struct pair_int_int {
 	int first;
 	int second;
 };
+
+struct triple_int {
+	int first;
+	int second;
+	int third;
+};

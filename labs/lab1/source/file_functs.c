@@ -90,8 +90,54 @@ int get_master_data_num(int id) {
     return res;
 }
 
-struct Line get_slave(int slave_id) {
+struct Line get_slave(int id) {
+    int data_num = get_slave_data_num(id);
 
+    if (data_num == -1)
+        return (struct Line) { -1, 0, 0, 0 };
+
+    FILE* fp = fopen("data/S.fl", "rb");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Couldn't open MS.insp in [ get slave ]!");
+        return (struct Line) { -1, 0, 0, 0 };
+    }
+
+    struct Line res;
+
+    fseek(fp, data_num * sizeof(struct Line), SEEK_SET);
+    fread(&res, sizeof(res), 1, fp);
+
+    return res;
+}
+
+int get_slave_data_num(int id) {
+    FILE* fp = fopen("data/MS.insp", "rb");
+
+    if (fp == NULL)
+        return -1;
+
+    int res, curr_ind;
+    bool found = false;
+
+    fseek(fp, sizeof(int), SEEK_CUR);
+
+    while (fread(&curr_ind, sizeof(curr_ind), 1, fp) != NULL) {
+        if (curr_ind == id) {
+            fread(&res, sizeof(res), 1, fp);
+            found = true;
+            break;
+        }
+
+        fseek(fp, 2 * sizeof(int), SEEK_CUR);
+
+    }
+
+    if (!found)
+        res = -1;
+
+    fclose(fp);
+    return res;
 }
 
 // --------------------------------------- DELETE ---------------------------------------

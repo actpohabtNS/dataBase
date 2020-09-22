@@ -128,6 +128,7 @@ void startFunc(int funcNum) {
 		print_metro(get_master(get_int_by_string("Enter metro's [ ID ] to [ get ]: ")));
 		break;
 	case 11:
+		print_line(get_slave(get_int_by_string("Enter line's [ ID ] to [ get ]: ")));
 		break;
 	case 20:
 		delete_master(get_int_by_string("Enter metro's [ ID ] to [ delete ]: "));
@@ -251,4 +252,11 @@ void print_metro(struct Metro metro) {
 		printf("\nNo metro with this id!\n");
 	else
 		printf("\n%d %s %d %d\n", metro.id, metro.name, metro.passFlow, metro.yFounded);
+}
+
+void print_line(struct Line line) {
+	if (line.id == -1)
+		printf("\nNo line with this id!\n");
+	else
+		printf("\n%d %d %d %d\n", line.id, line.number, line.length, line.stNum);
 }

@@ -7,7 +7,7 @@ int get_slave_data_count();
 
 struct Metro get_master(int id);
 int get_master_data_num(int id);
-struct Line get_slave(int slave_id);
+struct Line get_slave(int id);
 int get_slave_data_num(int id);
 
 void delete_master(int id);

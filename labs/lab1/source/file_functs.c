@@ -478,6 +478,21 @@ void count_master() {
     printf("Master file has %d [ records ]!", rows);
 }
 
+void count_slave() {
+    FILE* fp = fopen("data/S.ind", "ab+");
+
+    if (fp == NULL) {
+        printf("[ ERROR ] Unable to create [ S.ind ] file.\n");
+        return;
+    }
+
+    int rows = get_slave_data_count();
+
+    fclose(fp);
+
+    printf("Slave file has %d [ records ]!", rows);
+}
+
 
 // --------------------------------------- PRINT ---------------------------------------
 

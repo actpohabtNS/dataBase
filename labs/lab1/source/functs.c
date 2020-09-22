@@ -149,6 +149,7 @@ void startFunc(int funcNum) {
 		count_master();
 		break;
 	case 51:
+		count_slave();
 		break;
 	case 60:
 		print_master_file();

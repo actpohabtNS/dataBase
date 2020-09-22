@@ -108,6 +108,7 @@ void startFunc(int funcNum) {
 	switch (funcNum)
 	{
 	case 10:
+		printf("%d", get_int_by_string("Input this: "));
 		break;
 	case 11:
 		break;
@@ -201,4 +202,11 @@ struct Line getLineInput() {
 	scanf("%d", &l.stNum);
 
 	return l;
+}
+
+int get_int_by_string(char* str) {
+	int res;
+	printf("%s ", str);
+	scanf("%d", &res);
+	return res;
 }

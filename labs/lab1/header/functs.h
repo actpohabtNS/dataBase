@@ -13,3 +13,5 @@ void waitAndGoBack();
 struct Metro getMetroInput();
 
 struct Line getLineInput();
+
+int get_int_by_string(char* str);

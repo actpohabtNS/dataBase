@@ -6,6 +6,9 @@ void add_master(struct Metro metro);
 void add_master_file(struct Metro metro);
 void add_master_idx(struct Metro metro);
 
+struct Metro get_master(int id);
+struct Line get_slave(int master_id, int slave_id);
+
 void print_master();
 void print_slave();
 

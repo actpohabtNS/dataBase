@@ -7,7 +7,7 @@ int get_slave_data_count();
 
 struct Metro get_master(int id);
 int get_master_data_num(int id);
-struct Line get_slave(int master_id, int slave_id);
+struct Line get_slave(int slave_id);
 int get_slave_data_num(int id);
 
 void delete_master(int id);
@@ -24,7 +24,6 @@ void add_to_inspector(int m_id, int s_id, int s_loc);
 
 void add_slave(int m_id, struct Line line);
 void add_slave_file(struct Line line);
-void add_slave_idx(struct Line line);
 
 void count_master();
 void count_slave();

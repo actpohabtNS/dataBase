@@ -51,17 +51,15 @@ int chooseFunc() {
 	printf("61 - Print (file) slave\n\n");
 
 	printf("70 - Print (index) master\n");
-	printf("71 - Print (index) slave\n\n");
+	printf("71 - Print inspector\n\n");
 
-	printf("80 - Print inspector\n\n");
-
-	printf("90 - Clear master\n");
-	printf("91 - Clear slave\n\n");
+	printf("80 - Clear master\n");
+	printf("81 - Clear slave\n\n");
 	printf("Enter the number: ");
 
 	scanf("%d", &funcNum);
 
-	if (funcNum % 10 > 2 || funcNum > 92 || funcNum < 10) {
+	if (funcNum % 10 > 2 || funcNum > 82 || funcNum < 10) {
 		printf("[ ERROR ] WRONG NUMBER. TRY AGAIN.\n\n");
 		return chooseFunc();
 	}
@@ -72,6 +70,11 @@ int chooseFunc() {
 
 const char* getFuncStr(int funcNum) {
 	char str[30];
+
+	if (funcNum == 71) {
+		strcpy(str, "Print inspector");
+		return str;
+	}
 
 	switch (funcNum / 10) {
 	case 1:
@@ -96,9 +99,6 @@ const char* getFuncStr(int funcNum) {
 		strcpy(str, "Print (index)");
 		break;
 	case 8:
-		strcpy(str, "Print inspector");
-		return str;
-	case 9:
 		strcpy(str, "Clear");
 		break;
 	default:
@@ -161,17 +161,12 @@ void startFunc(int funcNum) {
 		print_master_index();
 		break;
 	case 71:
-		print_slave_index();
-		break;
-	case 80:
 		print_inspector();
 		break;
-	case 81:
-		break;
-	case 90:
+	case 80:
 		clear_master();
 		break;
-	case 91:
+	case 81:
 		clear_slave();
 		break;
 	default:

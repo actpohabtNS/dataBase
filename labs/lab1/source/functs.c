@@ -150,6 +150,7 @@ void startFunc(int funcNum) {
 		break;
 	case 50:
 		count_master();
+		count_slaves_for_masters();
 		break;
 	case 51:
 		count_slave();

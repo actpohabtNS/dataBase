@@ -629,6 +629,42 @@ void count_master() {
     printf("Master file has %d [ records ]!", rows);
 }
 
+int count_slaves_for_master(int m_id) {
+    FILE* fp = fopen("data/MS.insp", "rb");
+
+    if (fp == NULL) {
+        return 0;
+    }
+
+    int res = 0;
+
+    int curr_id;
+
+    while (fread(&curr_id, sizeof(curr_id), 1, fp) != NULL) {
+        if (curr_id == m_id)
+            res++;
+
+        fseek(fp, 2 * sizeof(int), SEEK_CUR);
+    }
+
+    fclose(fp);
+    return res;
+}
+
+void count_slaves_for_masters() {
+    printf("\n\nSlaves of masters:\n");
+
+    FILE* fp = fopen("data/M.ind", "rb");
+
+    int curr_id;
+
+    while (fread(&curr_id, sizeof(curr_id), 1, fp) != NULL) {
+        printf("\nMaster (id %d) has %d [ slaves ]!\n", curr_id, count_slaves_for_master(curr_id));
+
+        fseek(fp, sizeof(int), SEEK_CUR);
+    }
+}
+
 void count_slave() {
     FILE* fp = fopen("data/S.ind", "ab+");
 

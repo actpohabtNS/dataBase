@@ -32,6 +32,8 @@ void add_slave(int m_id, struct Line line);
 void add_slave_file(struct Line line);
 
 void count_master();
+int count_slaves_for_master(int m_id);
+void count_slaves_for_masters();
 void count_slave();
 
 void print_master_file();

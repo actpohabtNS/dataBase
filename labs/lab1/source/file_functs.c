@@ -781,7 +781,6 @@ void clear_master() {
     printf("\nMaster file was CLEARED!\n");
 
     clear_slave();
-    clear_inspector();
 }
 
 void clear_slave() {
